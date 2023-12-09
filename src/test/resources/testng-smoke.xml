@@ -1,0 +1,22 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Smoke" verbose="1" >
+    <test name="Search in home page"   >
+        <classes>
+            <class name="tests.GCPHomeTest">
+                <methods>
+                    <include name="searchContent"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name="Select product to calculate" >
+        <classes>
+            <class name="tests.GCPPricingCalculatorTest">
+                <methods>
+                    <include name="selectProduct"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
