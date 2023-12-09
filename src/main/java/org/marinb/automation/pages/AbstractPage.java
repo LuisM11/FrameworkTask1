@@ -2,6 +2,7 @@ package org.marinb.automation.pages;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.marinb.automation.service.TestDataReader;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
@@ -22,7 +23,6 @@ public abstract class AbstractPage {
     protected WebElement closeButtonSmartBanner;
 
     protected abstract AbstractPage openPage();
-
 
     protected AbstractPage(WebDriver driver) {
         this.driver = driver;
@@ -70,6 +70,7 @@ public abstract class AbstractPage {
         }
     }
 
+
     public void scrollToElement(WebElement element) {
         try {
             Thread.sleep(350);
@@ -102,6 +103,28 @@ public abstract class AbstractPage {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public String getExpectedTitle(String title) {
+       createExplicitWait().until(ExpectedConditions.titleContains(title));
+         return driver.getTitle();
+    }
+
+    protected void closeAdblockTab() {
+        if(TestDataReader.getEnv().equals("qa")){
+            return;
+        }
+        try{
+            createExplicitWait().until(ExpectedConditions.numberOfWindowsToBe(2));
+            String currentTab = driver.getWindowHandle();
+            for (String tab : driver.getWindowHandles()) {
+                if (!tab.equals(currentTab)) {
+                    driver.switchTo().window(tab);
+                    driver.close();
+                }
+            }
+            driver.switchTo().window(currentTab);
+        }catch (Exception e){}
     }
 
 

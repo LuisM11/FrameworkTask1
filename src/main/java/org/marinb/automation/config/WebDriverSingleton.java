@@ -2,6 +2,7 @@ package org.marinb.automation.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.marinb.automation.service.TestDataReader;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -16,6 +17,7 @@ import java.io.File;
 public class WebDriverSingleton{
 
     private static final Logger logger = LogManager.getLogger(WebDriverSingleton.class);
+    private static  final String AD_BLOCKER= "testdata.adblocker";
     private static WebDriver driver;
     private WebDriverSingleton() {}
     public static WebDriver createDriver() {
@@ -35,7 +37,7 @@ public class WebDriverSingleton{
                     logger.info("Setting browser: Chrome");
                     ChromeOptions chromeOptions = new ChromeOptions();
                     chromeOptions.addExtensions(new File("src/test/resources/AdBlock-el-mejor-bloqueador-de-anuncios.crx"));
-                    driver = new ChromeDriver(chromeOptions);
+                    driver = TestDataReader.getTestData(AD_BLOCKER).equals("true") ? new ChromeDriver(chromeOptions) : new ChromeDriver();
 
             }
             driver.manage().window().maximize();

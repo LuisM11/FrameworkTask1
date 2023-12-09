@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -19,6 +20,7 @@ public class CalculatorFormPage extends AbstractPage{
 
     private static final Logger logger = LogManager.getLogger(CalculatorFormPage.class);
 
+    public static final String PAGE_URL = "https://cloud.google.com/products/calculator";
 
     @FindBy(css="#cloud-site > devsite-iframe > iframe")
     private WebElement iframe;
@@ -68,6 +70,10 @@ public class CalculatorFormPage extends AbstractPage{
 
     @FindBy(xpath="//form[@name='emailForm']//label[text()='Email ']/following-sibling::input")
     private WebElement emailInput;
+
+    @FindBy(xpath = "//md-tabs-canvas")
+    private WebElement productsTabsContainer;
+
 
     public CalculatorFormPage switchToFormIframe() {
         createFluentWait().until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(iframe));
@@ -148,8 +154,13 @@ public class CalculatorFormPage extends AbstractPage{
 
 
     @Override
-    protected AbstractPage openPage() {
-        return null;
+    public CalculatorFormPage openPage() {
+        driver.get(PAGE_URL);
+        logger.info("Opening calculator page");
+        if(driver instanceof ChromeDriver){
+            closeAdblockTab();
+        }
+        return this;
     }
 
     public CalculatorFormPage fillEmailAndSubmit(String email) {
@@ -163,10 +174,24 @@ public class CalculatorFormPage extends AbstractPage{
         return this;
     }
 
+    public CalculatorFormPage selectProductTab(String tabName) {
+        switchToFormIframe();
+        waitElementToBeVisible(productsTabsContainer);
+        WebElement tab = driver.findElement(By.xpath("//md-tabs-canvas//div[@title='" + tabName + "']/parent::*[contains(@id, 'tab')]"));
+        click(tab);
+        sleep(1);
+        return this;
+    }
+
     public String getEstimatedCost() {
         waitElementToBeVisible(resultBlock);
         String totalEstimatedCost = resultBlock.findElement(By.xpath("//div[@class='cpc-cart-total']/h2/b")).getText();
         logger.info("Getting estimated cost in page -> " + totalEstimatedCost);
         return totalEstimatedCost;
+    }
+
+    public String getFormTitle(String title) {
+        WebElement formTitle = createExplicitWait().until(ExpectedConditions.presenceOfElementLocated(By.xpath("//h2[contains(text(),'" + title +"')]")));
+        return formTitle.getText();
     }
 }

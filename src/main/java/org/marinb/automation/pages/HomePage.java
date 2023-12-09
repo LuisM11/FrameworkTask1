@@ -3,6 +3,7 @@ package org.marinb.automation.pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.marinb.automation.service.TestDataReader;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -24,26 +25,13 @@ public class HomePage extends AbstractPage{
     public HomePage openPage() {
         logger.info("Opening home page");
         driver.get(BASE_URL);
-        if(driver instanceof ChromeDriver){
+        if(driver instanceof ChromeDriver ){
             closeAdblockTab();
         }
-        driver.manage().window().maximize();
         return this;
     }
 
-    private void closeAdblockTab() {
-        try{
-            createExplicitWait().until(ExpectedConditions.numberOfWindowsToBe(2));
-            String currentTab = driver.getWindowHandle();
-            for (String tab : driver.getWindowHandles()) {
-                if (!tab.equals(currentTab)) {
-                    driver.switchTo().window(tab);
-                    driver.close();
-                }
-            }
-            driver.switchTo().window(currentTab);
-        }catch (Exception e){}
-    }
+
 
     public ResultsPage search(String text) {
         click(searchField);
