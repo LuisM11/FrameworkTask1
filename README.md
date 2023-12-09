@@ -14,6 +14,7 @@ Some system properties are set using surefire plugin, these are:
 
 > [!NOTE]
 > *  Production environment is the current context which is being tested, but it implies impredictable ads in some pages like Yopmail, so to avoid this, an adblocker was only added to chrome in the prod environment.
+> *  Adblocker tab closes automatically !!
 
 It's possible to specify a path with a concrete test suit, for example with smoke tests.
 
